@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Equation Solver</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1 class="project-title">Peyman's Math Project</h1>
+    <h1>🧮 Linear Equation Solver</h1>
+    <p>Enter two equations in the form <code>ax + by = c</code></p>
+
+    <form id="solver-form">
+      <div class="input-group">
+        <label for="eq1">Equation 1:</label>
+        <input type="text" id="eq1" placeholder="e.g. 2x + 3y = 6" required />
+      </div>
+
+      <div class="input-group">
+        <label for="eq2">Equation 2:</label>
+        <input type="text" id="eq2" placeholder="e.g. x - y = 2" required />
+      </div>
+
+      <button type="submit">Solve</button>
+    </form>
+
+    <div class="output">
+      <h2>Results:</h2>
+      <p id="result-x">x = ?</p>
+      <p id="result-y">y = ?</p>
+      <p id="result-error" style="color: red;"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
