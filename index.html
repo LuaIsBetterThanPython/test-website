@@ -3,35 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Equation Solver</title>
+  <title>Peyman's Math Project</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
+  <div class="container fade-in">
     <h1 class="project-title">Peyman's Math Project</h1>
     <h1>🧮 Linear Equation Solver</h1>
-    <p>Enter two equations in the form <code>ax + by = c</code></p>
+    <p>Enter two equations (any form is fine):</p>
 
-    <form id="solver-form">
+    <!-- Example selector -->
+    <select id="example-select">
+      <option value="">🔽 Try Example</option>
+      <option value="y=2x+3;x+y=5">y = 2x + 3  &  x + y = 5</option>
+      <option value="3x-2y=4;6x-4y=8">3x - 2y = 4  &  6x - 4y = 8</option>
+      <option value="x=2y+1;y=x-4">x = 2y + 1  &  y = x - 4</option>
+    </select>
+
+    <form id="solver-form" class="slide-up">
       <div class="input-group">
         <label for="eq1">Equation 1:</label>
-        <input type="text" id="eq1" placeholder="e.g. 2x + 3y = 6" required />
+        <input type="text" id="eq1" placeholder="e.g. y = 2x + 3" required />
       </div>
 
       <div class="input-group">
         <label for="eq2">Equation 2:</label>
-        <input type="text" id="eq2" placeholder="e.g. x - y = 2" required />
+        <input type="text" id="eq2" placeholder="e.g. x + y = 5" required />
       </div>
 
-      <button type="submit">Solve</button>
+      <button type="submit" id="solve-btn">Solve</button>
     </form>
 
-    <div class="output">
+    <div class="output fade" id="output-box">
       <h2>Results:</h2>
       <p id="result-x">x = ?</p>
       <p id="result-y">y = ?</p>
       <p id="result-error" style="color: red;"></p>
     </div>
+
+    <div class="steps fade" id="steps-box">
+      <h3>Step-by-Step Solution:</h3>
+      <div id="steps-output"></div>
+    </div>
+
+    <div class="graph-wrapper">
+      <canvas id="graph" width="400" height="400"></canvas>
+      <div class="zoom-controls">
+        <button id="zoom-in">🔍 +</button>
+        <button id="zoom-out">🔎 −</button>
+        <button id="reset-zoom">♻️ Reset</button>
+      </div>
+    </div>
+
+
+    <button id="theme-toggle">🌙 Toggle Theme</button>
   </div>
 
   <script src="script.js"></script>
