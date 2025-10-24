@@ -5,29 +5,46 @@ function isLinearEquation(eq) {
   return !(/([xy]\^(\d+)|[xy]\*\*|\bxy\b)/.test(eq) && !/([xy]\^1)/.test(eq));
 }
 
-// Parse linear equations
+// parse
 function parseEquationGeneral(eq) {
-  if (!eq) return null;
+  if (!eq) return [0, 0, 0];
+
   eq = eq.replace(/\s+/g, '').toLowerCase();
   if (!eq.includes('=')) eq += '=0';
   const [left, right] = eq.split('=');
-  const expr = `${left}-(${right})`;
+
   let a = 0, b = 0, c = 0;
-  const terms = expr.match(/[+-]?\d*\.?\d*(x|y)?/g)?.filter(t => t && t !== '+' && t !== '-') || [];
-  for (let term of terms) {
-    const match = term.match(/^([+-]?\d*\.?\d*)(x|y)?$/);
-    if (!match) continue;
-    let [, coeffStr, variable] = match;
-    if (coeffStr === '' || coeffStr === '+') coeffStr = '1';
-    else if (coeffStr === '-') coeffStr = '-1';
-    const coeff = parseFloat(coeffStr);
-    if (isNaN(coeff)) continue;
-    if (variable === 'x') a += coeff;
-    else if (variable === 'y') b += coeff;
-    else c += coeff;
+
+  function addTerms(expr, sign = 1) {
+    const terms = expr.match(/[+-]?\d*\.?\d*(x|y)?/g)?.filter(t => t && t !== '+' && t !== '-') || [];
+    for (let term of terms) {
+      const match = term.match(/^([+-]?\d*\.?\d*)(x|y)?$/);
+      if (!match) continue;
+      let [, coeffStr, variable] = match;
+      if (coeffStr === '' || coeffStr === '+') coeffStr = '1';
+      else if (coeffStr === '-') coeffStr = '-1';
+      const coeff = parseFloat(coeffStr) * sign;
+      if (variable === 'x') a += coeff;
+      else if (variable === 'y') b += coeff;
+      else c += coeff;
+    }
   }
-  return [a, b, -c];
+
+  addTerms(left, 1);
+  addTerms(right, -1);
+
+  const firstConstIndex = eq.search(/\d/);
+  const equalIndex = eq.indexOf('=');
+  if (firstConstIndex >= 0 && firstConstIndex < equalIndex) {
+    c = -c;
+  }
+
+  return [a, b, c];
 }
+
+
+
+
 
 // Parse function for nonlinear
 function parseFunction(eq) {
