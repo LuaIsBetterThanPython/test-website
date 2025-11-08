@@ -1,62 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Peyman's Math Project</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peyman's Math Toolkit</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container fade-in">
-    <h1 class="project-title">Peyman's Math Project</h1>
-    <h1>🧮 Linear Equation Solver</h1>
-    <p>Enter two equations (any form is fine):</p>
+  <div class="container">
+    <header>
+      <h1>🧮 Peyman's Math Toolkit</h1>
+      <p class="subtitle">Your all-in-one mathematics solution hub</p>
+    </header>
 
-    <!-- Example selector -->
-    <select id="example-select">
-      <option value="">🔽 Try Example</option>
-      <option value="y=2x+3;x+y=5">y = 2x + 3  &  x + y = 5</option>
-      <option value="3x-2y=4;6x-4y=8">3x - 2y = 4  &  6x - 4y = 8</option>
-      <option value="x=2y+1;y=x-4">x = 2y + 1  &  y = x - 4</option>
-    </select>
-
-    <form id="solver-form" class="slide-up">
-      <div class="input-group">
-        <label for="eq1">Equation 1:</label>
-        <input type="text" id="eq1" placeholder="e.g. y = 2x + 3" required />
-      </div>
-
-      <div class="input-group">
-        <label for="eq2">Equation 2:</label>
-        <input type="text" id="eq2" placeholder="e.g. x + y = 5" required />
-      </div>
-
-      <button type="submit" id="solve-btn">Solve</button>
-    </form>
-
-    <div class="output fade" id="output-box">
-      <h2>Results:</h2>
-      <p id="result-x">x = ?</p>
-      <p id="result-y">y = ?</p>
-      <p id="result-error" style="color: red;"></p>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('system')">System Solver</button>
+      <button class="tab-btn" onclick="switchTab('equation')">Equation Solver</button>
+      <button class="tab-btn" onclick="switchTab('converter')">Number Converter</button>
+      <button class="tab-btn" onclick="switchTab('matrix')">Matrix Calculator</button>
+      <button class="tab-btn" onclick="switchTab('stats')">Statistics</button>
+      <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
     </div>
 
-    <div class="steps fade" id="steps-box">
-      <h3>Step-by-Step Solution:</h3>
-      <div id="steps-output"></div>
+    <div class="settings-panel" id="settings-panel">
+      <h3>⚙️ Settings</h3>
+      <div class="input-group">
+        <label>Theme:</label>
+        <select id="theme-select" onchange="changeTheme()">
+          <option value="light">Light Mode</option>
+          <option value="dark">Dark Mode</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Background Type:</label>
+        <select id="bg-type-select" onchange="changeBgType()">
+          <option value="gradient">Gradient Colors</option>
+          <option value="image">Custom Image</option>
+        </select>
+      </div>
+      <div id="gradient-settings">
+        <div class="input-group">
+          <label>Background Color 1:</label>
+          <input type="color" id="bg-color" value="#667eea" onchange="changeBgColor()">
+        </div>
+        <div class="input-group">
+          <label>Background Color 2:</label>
+          <input type="color" id="accent-color" value="#764ba2" onchange="changeAccentColor()">
+        </div>
+      </div>
+      <div id="image-settings" style="display:none;">
+        <div class="input-group">
+          <label>Upload Background Image:</label>
+          <input type="file" id="bg-image-upload" accept="image/*" onchange="uploadBgImage()">
+        </div>
+      </div>
+      <button class="reset-btn" onclick="resetSettings()">🗑️ Reset Settings</button>
+      <button class="calc-btn" onclick="toggleSettings()">Close Settings</button>
     </div>
 
-    <div class="graph-wrapper">
-      <canvas id="graph" width="400" height="400"></canvas>
+    <div class="tool-card active" id="system">
+      <h2>📈 System Solver & Grapher</h2>
+      
+      <div class="input-group">
+        <label>Equation 1 (y = f₁(x)):</label>
+        <input type="text" id="system-eq1" placeholder="e.g., 2*x + 3 or sin(x) + 1">
+      </div>
+      <div class="input-group">
+        <label>Equation 2 (y = f₂(x)):</label>
+        <input type="text" id="system-eq2" placeholder="e.g., x^2 or 5 - 3*x">
+      </div>
+      
+      <div class="input-group">
+        <label>Quick Functions (Inserts into focused box):</label>
+        <div class="button-row">
+          <button class="func-btn" onclick="insertFunc('sqrt(')">√ Square Root</button>
+          <button class="func-btn" onclick="insertFunc('cbrt(')">∛ Cube Root</button>
+          <button class="func-btn" onclick="showRootInput()">ⁿ√ nth Root</button>
+          <button class="func-btn" onclick="insertFunc('sin(')">sin(x)</button>
+          <button class="func-btn" onclick="insertFunc('cos(')">cos(x)</button>
+          <button class="func-btn" onclick="insertFunc('tan(')">tan(x)</button>
+          <button class="func-btn" onclick="insertFunc('exp(')">eˣ</button>
+          <button class="func-btn" onclick="insertFunc('log(')">ln(x)</button>
+          <button class="func-btn" onclick="insertFunc('abs(')">|x|</button>
+        </div>
+      </div>
+      <div class="input-group" id="root-input" style="display:none;">
+          <label>Custom Root: ⁿ√x</label>
+          <input type="number" id="custom-root" placeholder="Enter n (e.g., 4 for fourth root)" min="2">
+          <button class="func-btn" onclick="insertCustomRoot()">Insert Root</button>
+      </div>
+
       <div class="zoom-controls">
-        <button id="zoom-in">🔍 +</button>
-        <button id="zoom-out">🔎 −</button>
-        <button id="reset-zoom">♻️ Reset</button>
+        <button class="zoom-btn" onclick="zoomGraph(-1)">🔍 Zoom In</button>
+        <button class="zoom-btn" onclick="zoomGraph(1)">🔎 Zoom Out</button>
+        <button class="zoom-btn" onclick="resetZoom()">↻ Reset View</button>
+        <span id="zoom-level">Zoom: 1x</span>
       </div>
+
+      <button class="calc-btn" onclick="solveSystem()">Solve System</button>
+      
+      <div class="result-box" id="system-result"></div>
+      <canvas id="system-graph" width="700" height="500"></canvas>
+    </div>
+    
+    <div class="tool-card" id="equation">
+      <h2>🔢 Equation Solver</h2>
+      <div class="input-group">
+        <label>Equation Type:</label>
+        <select id="eq-type" onchange="toggleEqType()">
+          <option value="quadratic">Quadratic (ax² + bx + c = 0)</option>
+          <option value="cubic">Cubic (ax³ + bx² + cx + d = 0)</option>
+        </select>
+      </div>
+      <div id="quadratic-inputs">
+        <div class="grid-2">
+          <div class="input-group">
+            <label>a (x² coefficient):</label>
+            <input type="number" id="quad-a" value="1" step="any">
+          </div>
+          <div class="input-group">
+            <label>b (x coefficient):</label>
+            <input type="number" id="quad-b" value="-5" step="any">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>c (constant):</label>
+          <input type="number" id="quad-c" value="6" step="any">
+        </div>
+      </div>
+      <div id="cubic-inputs" style="display:none;">
+        <div class="grid-2">
+          <div class="input-group">
+            <label>a (x³ coefficient):</label>
+            <input type="number" id="cubic-a" value="1" step="any">
+          </div>
+          <div class="input-group">
+            <label>b (x² coefficient):</label>
+            <input type="number" id="cubic-b" value="0" step="any">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="input-group">
+            <label>c (x coefficient):</label>
+            <input type="number" id="cubic-c" value="-7" step="any">
+          </div>
+          <div class="input-group">
+            <label>d (constant):</label>
+            <input type="number" id="cubic-d" value="6" step="any">
+          </div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="solveEquation()">Solve Equation</button>
+      <div class="result-box" id="equation-result"></div>
     </div>
 
+    <div class="tool-card" id="converter">
+      <h2>🔄 Number System Converter</h2>
+      <div class="input-group">
+        <label>Input Type:</label>
+        <select id="conv-input-type">
+          <option value="10">Decimal (Base 10)</option>
+          <option value="2">Binary (Base 2)</option>
+          <option value="8">Octal (Base 8)</option>
+          <option value="16">Hexadecimal (Base 16)</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Enter Number:</label>
+        <input type="text" id="conv-input" placeholder="e.g., 255">
+      </div>
+      <button class="calc-btn" onclick="convertNumber()">Convert</button>
+      <div class="result-box" id="converter-result"></div>
+    </div>
 
-    <button id="theme-toggle">🌙 Toggle Theme</button>
+    <div class="tool-card" id="matrix">
+      <h2>🔢 Matrix Calculator</h2>
+      <div class="input-group">
+        <label>Operation:</label>
+        <select id="matrix-op" onchange="toggleMatrixOp()">
+          <option value="determinant">Determinant (2x2 or 3x3)</option>
+          <option value="inverse">Inverse (2x2)</option>
+          <option value="multiply">Multiply (2x2 × 2x2)</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Matrix Size:</label>
+        <select id="matrix-size">
+          <option value="2">2x2</option>
+          <option value="3">3x3</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Matrix A (comma-separated rows):</label>
+        <textarea id="matrix-a" rows="3" placeholder="1,2&#10;3,4"></textarea>
+      </div>
+      <div class="input-group" id="matrix-b-group" style="display:none;">
+        <label>Matrix B:</label>
+        <textarea id="matrix-b" rows="3" placeholder="5,6&#10;7,8"></textarea>
+      </div>
+      <button class="calc-btn" onclick="calculateMatrix()">Calculate</button>
+      <div class="result-box" id="matrix-result"></div>
+    </div>
+
+    <div class="tool-card" id="stats">
+      <h2>📊 Statistics Calculator</h2>
+      <div class="input-group">
+        <label>Enter Numbers (comma-separated):</label>
+        <textarea id="stats-input" rows="3" placeholder="12, 15, 18, 20, 22, 25, 30"></textarea>
+      </div>
+      <button class="calc-btn" onclick="calculateStats()">Calculate Statistics</button>
+      <div class="result-box" id="stats-result"></div>
+    </div>
   </div>
 
   <script src="script.js"></script>
